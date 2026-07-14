@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <!-- 关键：适配手机屏幕，防止微信里字体变小 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>MCU 参考手册助手</title>
+    
+    <!-- 官方最新稳定版 Chat SDK -->
+    <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.19/libs/cn/index.js"></script>
+    
+    <style>
+        /* 防止页面出现滚动条，让聊天框全屏 */
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f0f2f5;
+            height: 100vh;
+            overflow: hidden; /* 隐藏溢出，防止双滚动条 */
+        }
+        /* 给加载时的提示信息加点样式 */
+        #loading-tip {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            font-size: 16px;
+            color: #666;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+        }
+    </style>
+</head>
+<body>
+    <!-- 加载提示：SDK加载慢的时候用户能看到 -->
+    <div id="loading-tip">智能体加载中，请稍候...</div>
+
+    <script>
+        // 等待页面完全加载后再初始化SDK
+        window.onload = function() {
+            try {
+                new CozeWebSDK.WebChatClient({
+                    config: {
+                        // 👇 你的 Bot ID (已填入，无需修改)
+                        bot_id: '7655572585463332905',
+                    },
+                    componentProps: {
+                        title: 'MCU 手册助手',
+                        // 移动端优化：默认展开，不需要用户点气泡
+                        defaultOpen: true, 
+                        // 占位符提示
+                        placeholder: '请输入问题，如：L071的VBAT怎么配置？',
+                        // 显示机器人头像
+                        showBotInfo: true,
+                    },
+                    auth: {
+                        type: 'token',
+                        // 👇 这里替换成你自己的 PAT (pat_开头的字符串)
+                        token: 'pat_NS5d58FVEjhbPoRea9Cw3qP8VaJmJNaAMX1f2gfDWVxtaK8nbQ6mnS89H59UAdrK', 
+						onRefreshToken: function () {
+                          return 'pat_NS5d58FVEjhbPoRea9Cw3qP8VaJmJNaAMX1f2gfDWVxtaK8nbQ6mnS89H59UAdrK'
+                        }
+                    }
+                });
+
+                // 初始化成功后移除加载提示
+                document.getElementById('loading-tip').style.display = 'none';
+
+            } catch (err) {
+                console.error('Init Failed:', err);
+                document.getElementById('loading-tip').innerText = '初始化失败，请查看控制台报错。';
+            }
+        };
+    </script>
+</body>
+</html>
